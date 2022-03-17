@@ -1,4 +1,5 @@
 #include <iostream>  
+#include <math.h>
 #include <opencv2/core/core.hpp>  
 #include <opencv2/highgui/highgui.hpp>  
 
@@ -67,7 +68,7 @@ void balance(int* data, Mat* grey, Mat* balance) {
 	}
 }
 
-void linear_strech(int* data, Mat* grey, Mat* linear) {
+void linear_stretch(int* data, Mat* grey, Mat* linear) {
 	float min = 0, max = 0;
 	for (int i = 0; i < 256; i++) {
 		if (data[i] != 0) {
@@ -92,12 +93,25 @@ void linear_strech(int* data, Mat* grey, Mat* linear) {
 	}
 }
 
+void nonelinear_stretch(int* data, Mat* grey, Mat* nonelinear) {
+	unsigned char* ptr1 = grey->data;
+	unsigned char* ptr2 = nonelinear->data;
+	for (int i = 0; i < size512; i++) {
+		for (int j = 0; j < size512; j++) {
+			*ptr2 = (float)pow((float)*ptr1 / (float)255, 0.5) * 255;
+			ptr1++;
+			ptr2++;
+		}
+	}
+}
+
 int main()
 {
 	Mat in_img;
 	Mat grey_img(size512, size512, CV_8UC1), 
 		balance_img(size512, size512, CV_8UC1),
-		linear_img(size512, size512, CV_8UC1);
+		linear_img(size512, size512, CV_8UC1),
+		nonelinear_img(size512, size512, CV_8UC1);
 	int rows, colums = 0;
 	int grey_num[256] = { 0 }, balance_num[256] = { 0 };
 
@@ -118,7 +132,10 @@ int main()
 	balance(grey_num, &grey_img, &balance_img);
 
 	//linear_streach
-	linear_strech(grey_num, &grey_img, &linear_img);
+	linear_stretch(grey_num, &grey_img, &linear_img);
+
+	//nonelinear_stretch
+	nonelinear_stretch(grey_num, &grey_img, &nonelinear_img);
 
 
 	//display
@@ -126,6 +143,7 @@ int main()
 	displayImg(&grey_img, "grey");
 	displayImg(&balance_img, "balance");
 	displayImg(&linear_img, "linear");
+	displayImg(&nonelinear_img, "nonelinear");
 
 	return 0;
 }
