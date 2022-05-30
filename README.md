@@ -22,3 +22,13 @@
 * DFT & iDFT
 * FFT & iFFT & FFTShift & Comparison
 * DCT & iDCT & Comparison
+
+##### JPEG
+
+*using Python CV2 Matplotlib Numpy*
+
+* JPEG compressing
+* JPEG uncompressing
+* summary
+
+**FINISHED!**
